@@ -112,3 +112,10 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+HOOK_SCRIPTS=$(find ~ -maxdepth 1 -type f -name ".bashrc_?*");
+for HOOK in $HOOK_SCRIPTS; do
+    . $HOOK;
+done;
+unset HOOK_SCRIPTS;
+unset HOOK;

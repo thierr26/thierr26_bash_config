@@ -17,3 +17,10 @@ alias l='ls $LS_OPTIONS -lA'
 # alias rm='rm -i'
 # alias cp='cp -i'
 # alias mv='mv -i'
+
+HOOK_SCRIPTS=$(find ~ -maxdepth 1 -type f -name ".bashrc_?*");
+for HOOK in $HOOK_SCRIPTS; do
+    . $HOOK;
+done;
+unset HOOK_SCRIPTS;
+unset HOOK;
