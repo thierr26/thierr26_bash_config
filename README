@@ -1,0 +1,18 @@
+This repository contains the Bash configuration that the author uses as a
+"normal" user or as root. The "normal" user Bash configuration is in the
+subdirectory "for_a_user", and the root Bash configuration is in the
+subdirectory "for_root".
+
+Each subdirectory contains a .bashrc file and one or more files with a name
+starting with .bashrc_ that the .bashrc file sources automatically.
+
+The repository also contains the file install_thierr26_bash_config which is a
+shell script (actually a dash script) to copy the file to the user's home
+directory or to the directory specified on the command line. Launch the script
+with the --help option for a more detailed documentation. Note that no backup
+of the overwritten files is done by the script.
+
+==============================================================================
+Author: Thierry Rascle (thierr26@free.fr)
+
+Licensed under the Unlicense license (see http://unlicense.org).
