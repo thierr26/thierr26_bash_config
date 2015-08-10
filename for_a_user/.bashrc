@@ -115,7 +115,9 @@ fi
 
 HOOK_SCRIPTS=$(find ~ -maxdepth 1 -type f -name ".bashrc_?*");
 for HOOK in $HOOK_SCRIPTS; do
-    . $HOOK;
+    if [ -r $HOOK ]; then
+        . $HOOK;
+    fi;
 done;
 unset HOOK_SCRIPTS;
 unset HOOK;
