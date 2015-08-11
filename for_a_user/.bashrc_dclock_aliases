@@ -1,0 +1,1 @@
+alias dclock='dclock -date "%F(%a)" -bw 0 &'
