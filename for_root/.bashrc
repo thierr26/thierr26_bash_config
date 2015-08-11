@@ -18,11 +18,18 @@ alias l='ls $LS_OPTIONS -lA'
 # alias cp='cp -i'
 # alias mv='mv -i'
 
+# Find the hook scripts (they are in the user's home directory and have a name
+# starting with .bashrc_ and with at least one more character).
 HOOK_SCRIPTS=$(find ~ -maxdepth 1 -type f -name ".bashrc_?*");
+
+# Loop over the hook scrupts.
 for HOOK in $HOOK_SCRIPTS; do
     if [ -r $HOOK ]; then
+        # If the hook script is readable, then source it.
         . $HOOK;
     fi;
 done;
+
+# Unset the variables which have been set by the hook scripts mechanism.
 unset HOOK_SCRIPTS;
 unset HOOK;
