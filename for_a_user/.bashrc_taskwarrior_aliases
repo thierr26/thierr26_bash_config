@@ -1,3 +1,8 @@
 alias t='task'
-alias ta='task add pri:M'
+alias ta='task add pri:M' # Ensures that the task is not added without a
+                          # priority attribute. If you want another priority
+                          # value, just add pri:L or pri:H to your command
+                          # line.
+alias tapp='task add pri:H +appointment'
 alias to='task overdue'
+alias tcal='task calendar'
