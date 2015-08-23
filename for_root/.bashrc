@@ -20,7 +20,7 @@ alias l='ls $LS_OPTIONS -lA'
 
 # Find the hook scripts (they are in the user's home directory and have a name
 # starting with .bashrc_ and with at least one more character).
-HOOK_SCRIPTS=$(find ~ -maxdepth 1 -type f -name ".bashrc_?*");
+HOOK_SCRIPTS=$(find ~ -mindepth 1 -maxdepth 1 -type f -name ".bashrc_?*");
 
 # Loop over the hook scrupts.
 for HOOK in $HOOK_SCRIPTS; do
