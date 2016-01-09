@@ -1,2 +1,2 @@
-alias oc='octave-cli'
+alias oc='octave-cli --quiet'
 alias ocg='octave'
