@@ -1,0 +1,5 @@
+# Add the archiver wrapper scripts to the path.
+PATH=~/dvlpt/shell/archiver_wrappers:"${PATH}";
+
+# archiver_wrappers repository:
+# https://github.com/thierr26/archiver_wrappers

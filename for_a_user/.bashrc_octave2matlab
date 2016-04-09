@@ -1,0 +1,9 @@
+# Add octave2matlab scripts to the path.
+PATH=~/dvlpt/shell/octave2matlab:"${PATH}";
+
+# Define an alias.
+alias o2m='octaveh2matlabh_recursive -kf ~/dvlpt/octave ~/dvlpt/matlab \
+    2>&1|grep -v ": warning: entry for index \Wfn\W outside of any node"'
+
+# octave2matlab repository:
+# https://github.com/thierr26/octave2matlab
