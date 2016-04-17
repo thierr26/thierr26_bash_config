@@ -1,9 +1,16 @@
 # Add octave2matlab scripts to the path.
 PATH=~/dvlpt/shell/octave2matlab:"${PATH}";
 
-# Define an alias.
+# Define an alias to octaveh2matlabh_recursive.
 alias o2m='octaveh2matlabh_recursive -kf ~/dvlpt/octave ~/dvlpt/matlab \
     2>&1|grep -v ": warning: entry for index \Wfn\W outside of any node"'
 
-# octave2matlab repository:
+# Define an alias to build the matlab_atomm zip archive
+alias m_atomm='archive ~/dvlpt/matlab/atomm \
+    ~/dvlpt/thierr26/zip/matlab_atomm.zip'
+
+# octave2matlab (octaveh2matlabh_recursive) repository:
 # https://github.com/thierr26/octave2matlab
+#
+# archiver_wrappers (archiver) repository:
+# https://github.com/thierr26/archiver_wrappers
