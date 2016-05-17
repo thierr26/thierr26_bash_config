@@ -1,0 +1,14 @@
+search() {
+
+    [ $# -lt 1 ] \
+        && echo "Regular expression expected as first argument">&2 && return 1;
+    [ $# -lt 2 ] \
+        && echo "File filter (e.g. \"*.c\") expected as second argument"\
+        >&2 && return 1;
+
+    SEARCHTOP=.;
+    [ $# -gt 2 ] && SEARCHTOP="$3";
+
+    find "$SEARCHTOP" -name "$2" -exec grep -H "$1" {} \;
+
+}
