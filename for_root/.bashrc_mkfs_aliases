@@ -1,0 +1,2 @@
+alias formatext4='mkfs.ext4 -L' 
+alias formatntfs='mkfs.ntfs -f -L' 

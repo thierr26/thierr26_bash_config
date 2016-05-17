@@ -1,0 +1,16 @@
+cdblank() {
+
+    local DEV_OPT=;
+    [ $# -gt 0 ] && DEV_OPT="dev=$1";
+    cdrskin $DEV_OPT blank=fast;
+
+}
+
+burnisoimage() {
+
+    local DEV_OPT=;
+    [ $# -lt 1 ] && echo "ISO image file argument missing">&2 && return 1;
+    [ $# -gt 1 ] && DEV_OPT="dev=$2";
+    cdrskin $DEV_OPT -eject -v -data "$1";
+
+}
