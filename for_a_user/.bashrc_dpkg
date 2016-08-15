@@ -1,0 +1,21 @@
+dpkglistinstalled() {
+
+    local TS=$(date +%F--%H.%M.%S);
+    local SUFF=_"$HOSTNAME"_$TS;
+    local EXIT_STATUS=0;
+    local COUNT=0;
+    local FILE=;
+
+    local CMD=("dpkg --get-selections" "dpkg -l|grep ^i" "dpkg-query -l");
+    local FILE_PREF=(dpkg__get-selections dpkg_l_grep_i dpkg-query_l);
+
+    while [ "x${CMD[COUNT]}" != "x" ]; do
+        FILE="${FILE_PREF[$COUNT]}$SUFF";
+        echo Running "${CMD[$COUNT]}" and redirecting to "$FILE" "..."
+        [ $EXIT_STATUS -eq 0 ] \
+            && eval ${CMD[$COUNT]}>${FILE_PREF[$COUNT]}"$SUFF";
+        EXIT_STATUS=$?;
+        COUNT=$(($COUNT + 1));
+    done
+
+}
