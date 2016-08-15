@@ -1,5 +1,0 @@
-# Add the shebang switcher script to the path.
-PATH=~/dvlpt/shell/shebang_switcher:"${PATH}";
-
-# shebang_switcher repository:
-# https://github.com/thierr26/shebang_switcher
