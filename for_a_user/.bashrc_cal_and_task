@@ -1,0 +1,22 @@
+ccal() {
+
+    # Run 'gcal .' and process the output so that it's more compact (previous
+    # month is discarded).
+    #
+    # USAGE:
+    #
+    #     ccal
+
+    local REVERSE=$(echo "\\\e[07m");
+    local NORMAL=$(echo "\\\e[0m");
+
+    echo "                Today is $(date --iso-8601)";
+
+    gcal .|tail -n +6|sed "s/^.\{23\}//"|while IFS= read L; do
+        echo -e "$(echo "$L"|sed -e "s/</ \\\e[07m/"|sed -e "s/>/\\\e[0m /")";
+    done;
+
+}
+
+ccal;
+task;
