@@ -1,5 +1,11 @@
 cdblank() {
 
+    # Blank a CD or DVD.
+    #
+    # USAGE:
+    #
+    #     cdblank [DEVICE]
+
     local DEV_OPT=;
     [ $# -gt 0 ] && DEV_OPT="dev=$1";
     cdrskin $DEV_OPT blank=fast;
@@ -7,6 +13,12 @@ cdblank() {
 }
 
 burnisoimage() {
+
+    # Burn an ISO image file to a CD or DVD.
+    #
+    # USAGE:
+    #
+    #     burnisoimage ISO_IMAGE_FILE [DEVICE]
 
     local DEV_OPT=;
     [ $# -lt 1 ] && echo "ISO image file argument missing">&2 && return 1;

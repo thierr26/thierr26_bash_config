@@ -1,5 +1,23 @@
 search() {
 
+    # Run a 'find "<TOP_DIR>" -name "<FILE>" -exec grep -H "<REG_EXP>" {} \;'
+    # command, which helps finding text files containing lines that match a
+    # regular expression.
+    #
+    # TOP_DIR defaults to the current directory.
+    #
+    # Wild cards characters are allowed in FILE (e.g; "*.c").
+    #
+    # USAGE:
+    #
+    #     search REG_EXP FILE [TOP_DIR]
+    #
+    # EXAMPLES:
+    #
+    #     search "my_function(" "*.c"
+    #
+    #     search "my_function(" "*.c" my_source_tree_root
+
     local SEARCHTOP=.;
 
     [ $# -lt 1 ] \

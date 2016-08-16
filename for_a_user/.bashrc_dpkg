@@ -1,5 +1,23 @@
 dpkglistinstalled() {
 
+    # Run three dpkg commands giving the list of installed packages on a Debian
+    # system and redirect the outputs to files in the current directory.
+    #
+    # The commands are:
+    # - dpkg --get-selections
+    # - dpkg -l|grep ^i
+    # - dpkg-query -l
+    #
+    # The output files are named as follows:
+    # - dpkg__get-selections_<HOSTNAME>_<TIME_STAMP>
+    # - dpkg_l_grep_i_<HOSTNAME>_<TIME_STAMP>
+    # - dpkg-query_l_<HOSTNAME>_<TIME_STAMP>
+    # Blank a CD or DVD.
+    #
+    # USAGE:
+    #
+    #     dpkglistinstalled
+
     local TS=$(date +%F--%H.%M.%S);
     local SUFF=_"$HOSTNAME"_$TS;
     local EXIT_STATUS=0;
