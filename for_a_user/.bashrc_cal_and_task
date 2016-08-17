@@ -18,5 +18,5 @@ ccal() {
 
 }
 
-ccal;
-task;
+[ -x /usr/bin/gcal ] && ccal;
+[ -x /usr/bin/task ] && task;
