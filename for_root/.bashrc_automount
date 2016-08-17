@@ -1,0 +1,45 @@
+autofsmap() {
+
+    # Issue the 'automount -m' command and process the output.
+    #
+    # When autofs is configured, the raw 'automount -m' output looks like:
+    #
+    # autofs dump map information
+    # ===========================
+    #
+    # global options: none configured
+    #
+    # Mount point: /autofs/mount/point
+    #
+    # source(s):
+    #
+    #   instance type(s): file 
+    #   map: /etc/auto.removable
+    #   arguments: sync nodev nosuid
+    #
+    #   name_1 | -fstype=ext4                            :/dev/device_1
+    #   name_3 | -fstype=fuse,gid=46,dmask=002,fmask=113 :ntfs-3g#/dev/device_3
+    #   name_2 | -fstype=ext4                            :/dev/device_2
+    #
+    # With such a raw 'automount -m' output, the output of the present function
+    # is (note the sorting):
+    #
+    # /autofs/mount/point
+    #   name_1:/dev/device_1
+    #   name_2:/dev/device_2
+    #   name_3:/dev/device_3
+    #
+    # USAGE:
+    #
+    #     autofsmap [OUTPUT_FILE]
+
+    local CMD="automount -m|grep '\(^Mount point:\s\+\)\||'\
+        |sed 's/^[^:]\+:\s\+//'|sed 's/ \+|[^:]\+//'|sed 's/:[^#]\+#\+/:/'";
+
+    if [ $# -gt 0 ]; then
+        eval $CMD|(read -r; printf "%s\n" "$REPLY"; sort)>"$1";
+    else
+        eval $CMD|(read -r; printf "%s\n" "$REPLY"; sort);
+    fi;
+
+}

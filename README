@@ -7,10 +7,67 @@ Each subdirectory contains a .bashrc file and one or more files with a name
 starting with .bashrc_ that the .bashrc file sources automatically.
 
 The repository also contains the file install_thierr26_bash_config which is a
-shell script (actually a dash script) to copy the file to the user's home
+shell script (actually a dash script) to copy the files to the user's home
 directory or to the directory specified on the command line. Launch the script
 with the --help option for a more detailed documentation. Note that no backup
 of the overwritten files is done by the script.
+
+Let's shed some light on some of the functions that could be of interest to
+some users:
+
+----------------------------------------------
+* search() (defined in for_a_user/.bashrc_find):
+
+If you often search in source trees with commands like:
+
+find my_source_tree_root -name "*.c" -exec grep -H "my_function(" {} \;
+
+you may appreciate the search() function that does the same with shorter
+commands:
+
+search "my_function(" "*.c" my_source_tree_root
+
+Or (if your tree root is the current directory):
+
+search "my_function(" "*.c"
+
+----------------------------------------------
+* ccal() (defined in for_a_user/.bashrc_cal_and_task):
+
+The ccal() function produces an output similar to the command:
+
+gcal .
+
+but narrower (the previous month is removed).
+
+The ccal() function needs the gcal program to be installed. On a Debian
+system, gcal is available in the gcal package.
+
+----------------------------------------------
+* cda() (defined in for_a_user/.bashrc_cd)
+
+The autofs users may find the cda() function useful. It has been written to
+avoid having to type commands like:
+
+cd /var/autofs/removable/my_removable_disk
+
+to change directory to automountable removable file systems.
+
+Before using cda(), and assuming that you have configured autofs, make sure
+you have:
+- generated an autofs map file using (as root) function autofsmap() defined in
+  for_root/.bashrc_automount,
+- made the generated file readable by the users that want to use cda(),
+- set an environment variable called AUTOFSMAP to the path name of the
+  generated file.
+
+When called without argument, cda() interactively helps the user change
+directory to an automountable removable file system. cda() prints a numbered
+list of the removable file systems that are currently mountable. The user just
+has to type in the number to change directory to the selected file system.
+
+If you already know the number associated to the file system, use this number
+as an argument to cda() to change directory to the file system directly.
 
 ==============================================================================
 Author: Thierry Rascle (thierr26@free.fr)

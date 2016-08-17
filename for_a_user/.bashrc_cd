@@ -1,0 +1,233 @@
+errormsg() {
+
+    # Echo an error message to standard error.
+    #
+    # USAGE:
+    #
+    #     errormsg MSG [CONTINUED_MSG ...]
+
+    echo Error: $*>&2;
+
+}
+
+possibleduperror() {
+
+    # Echo an error message about a possible duplicated entry in the autofs map
+    # file to standard error.  Intended to be called by function automo with
+    # the argument to function automo as argument.
+    #
+    # USAGE:
+    #
+    #     possibleduperror AUTOMO_ARGUMENT
+
+    errormsg Ambiguous argument "$1" \
+        "(possible duplicated entry in $AUTOFSMAP).";
+
+}
+
+deviceifavailable() {
+
+    # Echo KEY if DEVICE exists as a block special device. Otherwise does not
+    # echo anything to standard output, only an error message to standard
+    # error.
+    #
+    # USAGE:
+    #
+    #     deviceifavailable KEY DEVICE
+
+    if [ -b "$(readlink -f "$2")" ]; then
+        echo "$1";
+    else
+        errormsg "$2" does not exist as a block special device.;
+    fi;
+
+}
+
+automo() {
+
+    # Select (interactively when called without argument) an autofs mountable
+    # file system and gives the mount point on the last echoed line.
+    #
+    # The present function relies on the fact that the environment variable
+    # AUTOFSMAP has been set.  AUTOFSMAP is supposed to be set to the path name
+    # of a file generated using function autofsmap defined in file
+    # for_root/.bashrc_automount.  Such a file contains basically the autofs
+    # map (actually the processed output of the "automount -m" command).
+    #
+    # When called without argument, the function lists the mountable file
+    # systems from the autofs map and prompts the user to choose a file system
+    # by giving the name of the file system (the map entry key in autofs
+    # terminology) or the associated number in the list.  The function
+    # acknowledges the user choice by echoing two lines.  The last of those
+    # lines gives the mount point.
+    #
+    # When called with an argument (supposed to be a map entry key or the
+    # associated number in the list that is printed when the function is called
+    # without argument), the function only echoes two lines.  The last of those
+    # lines gives the mount point.
+    #
+    # USAGE:
+    #
+    #     automo
+    #
+    #     automo AUTOFS_MAP_ENTRY_KEY
+    #
+    #     automo NUM
+
+    local TARGET=;
+    local MOUNTPOINT=;
+    local KEYCST="Map entry key";
+    local MAXKEYLEN=${#KEYCST};
+    local KEY=;
+    local DEV=;
+    local K=-1;
+    local ERRORPREF=;
+    local NOARG=true;
+    local ARGOK=true;
+    local NUMARG=false;
+    local AUTOFSMAPOK=false;
+    local KLEN=;
+    local L=;
+
+    if [ $# -gt 0 ]; then
+        NOARG=false;
+        if [ -z "$1" ]; then
+            errormsg "Empty argument not allowed.";
+            ARGOK=false;
+        elif [ $(echo "$1"|grep -c "^[0-9]\+$") -eq 1 ]; then
+            NUMARG=true;
+        fi;
+    fi;
+
+    if $ARGOK; then
+        if [ -z "$AUTOFSMAP" ]; then
+            errormsg AUTOFSMAP variable is not set.;
+        elif ! [ -f "$AUTOFSMAP" ]; then
+            errormsg "$AUTOFSMAP" does not exist or is not a file.;
+        elif ! [ -s "$AUTOFSMAP" ]; then
+            errormsg File "$AUTOFSMAP" is empty.;
+        else
+
+            AUTOFSMAPOK=true;
+            while IFS= read L; do
+                ERRORPREF="$AUTOFSMAP line $(($K + 2)):";
+                if [ $K -eq -1 ]; then
+                    if [ -z "$L" ]; then
+                        errormsg "$ERRORPREF" "Invalid mount point (empty).";
+                    elif ! [ -d "$L" ]; then
+                        errormsg "$ERRORPREF" "$L" is not a directory.;
+                    else
+                        MOUNTPOINT="$L";
+                    fi;
+                else
+                    KEY[$K]=$(echo "$L"|sed "s/^ *//"|sed "s/:.\+$//");
+                    if [ ${#KEY[$K]} -gt $MAXKEYLEN ]; then
+                        MAXKEYLEN=${#KEY[$K]};
+                    fi;
+                    DEV[$K]=$(echo "$L"|sed "s/^[^:]\+://");
+                    if [ "x${KEY[$K]}" == "x$L" ] \
+                            || [ "x${DEV[$K]}" == "x$L" ]; then
+                        errormsg "$ERRORPREF" Invalid line: "$L";
+                        AUTOFSMAPOK=false;
+                    elif ! $NOARG && $ARGOK; then
+                        if [ "x${KEY[$K]}" == "x$1" ]; then
+                            AUTOFSMAPOK=false;
+                            if ! $NUMARG && [ -n "$TARGET" ]; then
+                                errormsg Ambiguous argument "$1" \
+                                    "(duplicated entry in $AUTOFSMAP).";
+                            elif [ -n "$TARGET" ]; then
+                                possibleduperror "$1";
+                            else
+                                TARGET=$(deviceifavailable "${KEY[$K]}" \
+                                    "${DEV[$K]}");
+                                AUTOFSMAPOK=true;
+                            fi;
+                        elif $NUMARG && [ $(($1 - 1)) -eq $K ]; then
+                            AUTOFSMAPOK=false;
+                            if [ -n "$TARGET" ]; then
+                                possibleduperror "$1";
+                            else
+                                TARGET=$(deviceifavailable "${KEY[$K]}" \
+                                    "${DEV[$K]}");
+                                AUTOFSMAPOK=true;
+                            fi;
+                        fi;
+                    fi;
+                fi;
+                K=$(($K + 1));
+            done<"$AUTOFSMAP";
+
+            if [ $K -eq 0 ]; then
+                errormsg More than one line were expected in "$AUTOFSMAP";
+                AUTOFSMAPOK=false;
+            elif [ -z "$MOUNTPOINT" ]; then
+                AUTOFSMAPOK=false;
+            fi;
+
+        fi;
+    fi;
+
+    if $AUTOFSMAPOK; then
+        if ! $NOARG && [ -z "$TARGET" ]; then
+            errormsg Invalid argument "$1".;
+        elif $NOARG; then
+            echo autofs mount point is: "$MOUNTPOINT";
+            echo List of mountable file systems:
+            echo
+            KLEN=${#K};
+            printf "%${KLEN}s   %-${MAXKEYLEN}s  -  %s\n" \
+                " " "$KEYCST" "Device";
+            echo
+            for K in $(seq 0 $(($K - 1))); do
+                if [ -n "$(deviceifavailable "${KEY[$K]}" "${DEV[$K]}" \
+                        2>/dev/null)" ]; then
+                    printf "%${KLEN}d - %-${MAXKEYLEN}s  -  %s\n" \
+                        $(($K + 1)) "${KEY[$K]}" "${DEV[$K]}";
+                fi;
+            done;
+            echo -n "Enter a number or a map entry key and press [ENTER]: ";
+            read K;
+
+            # Recursive call.
+            automo "$K";
+        fi;
+
+        if [ -n "$TARGET" ]; then
+            echo "The mount point of the selected directory is:"
+            echo "$MOUNTPOINT/$TARGET";
+        fi;
+    fi;
+
+}
+
+cda() {
+
+    # Change directory to an autofs mountable file system.
+    #
+    # Please see the documentation for function automo above.  Function cda
+    # does nothing more than call function automo and change the current
+    # directory to the mount point output by automo.
+    #
+    # USAGE:
+    #
+    #     cda
+    #
+    #     cda AUTOFS_MAP_ENTRY_KEY
+    #
+    #     cda NUM
+
+    local DIR=;
+
+    if [ $# -gt 0 ]; then
+        DIR=$(automo "$1"|tail -1);
+    else
+        exec 3>&1;
+        DIR=$(automo|tee /dev/fd/3|tail -1);
+        exec 3>&-;
+    fi;
+
+    if [ -d "$DIR" ]; then
+        cd "$DIR";
+    fi;
+
+}
