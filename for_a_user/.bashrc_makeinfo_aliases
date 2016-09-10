@@ -1,0 +1,11 @@
+# makeinfo alias to be used on input files like:
+##
+## \input Texinfo
+## @include /usr/share/octave/4.0.3/etc/macros.texi
+## @setfilename octave_function_doc
+## @deftypefn {Function File} home_dir ()
+##
+## Path to the home directory of the user.
+## @end deftypefn
+## @bye
+alias tio='makeinfo -I /usr/share/octave/4.0.3/etc --plaintext'
