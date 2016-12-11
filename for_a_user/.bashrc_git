@@ -1,0 +1,74 @@
+alias g='git'
+
+gtagrelease() {
+
+    # Tag the last git commit for a release (tag is "v" followed by the
+    # argument and the tag is annotated with "Release " followed by the 
+    # argument).
+    #
+    # USAGE:
+    #
+    #     gtagrelease VERSION
+
+    git tag -a "v$1" -m "Release $1";
+
+}
+
+filenotfounderrormsg() {
+
+    # Echo a file not found error message to standard error.
+    #
+    # USAGE:
+    #
+    #     filenotfounderrormsg FILENAME
+
+    echo Error: $1 file not found>&2;
+
+}
+
+gcico() {
+
+    # Perform this command sequence:
+    #
+    # git init
+    # git add .
+    # git commit -m "Initial commit"
+    # rm -rf *
+    # git checkout *
+    # rm -rf .git
+    #
+    # The command sequence command is run if and only if there is no .git
+    # subdirectory in the current directory, but a LICENSE file a README file
+    # in the directory with a line matching exactly the argument.
+    #
+    # USAGE:
+    #
+    #     gcico LINE_OF_THE_README_FILE
+
+    LICFILE=LICENSE;
+    READMEFILE=README;
+    if [ -d .git ]; then
+        echo "Error: Current directory is a Git repository">&2;
+    elif [ $# -ne 1 ]; then
+        echo "Error: $Exactly one argument expected">&2;
+    elif [ -z "$1" ]; then
+        echo "Error: $Empty argument not allowed">&2;
+    elif ! [ -f "$LICFILE" ]; then
+        filenotfounderrormsg "$LICFILE";
+    elif ! [ -f "$READMEFILE" ]; then
+        filenotfounderrormsg "$READMEFILE";
+    elif [ $(grep -c "^$1$" "$READMEFILE") -eq 0 ]; then
+        echo "Error: $No line matching exactly:">&2;
+        echo >&2;
+        echo "$1">&2;
+        echo >&2;
+        echo "found in $READMEFILE">&2;
+    else
+        git init
+        git add .
+        git commit -m "Initial commit"
+        rm -rf *
+        git checkout *
+        rm -rf .git
+    fi
+}
