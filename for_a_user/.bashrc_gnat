@@ -1,0 +1,1 @@
+alias cdadainclude='cd $(gnatls -v|grep -A2 "^Source Search Path:"|grep adainclude$|head -1)'
