@@ -31,3 +31,23 @@ search() {
     find "$SEARCHTOP" -name "$2" -exec grep -H "$1" {} \;
 
 }
+
+find_by_modif_date() {
+
+    # Run a find command, with instructions added so that the resulting file
+    # list is displayed sorted by modification date (most recent last) and
+    # prefixed with modification date and time.
+    #
+    # USAGE:
+    #
+    #     find_by_modif_date [FIND_COMMAND_OPTIONS]
+    #
+    # EXAMPLES:
+    #
+    #     find_by_modif_date . -name "*.c"
+    #
+    #     find_by_modif_date . -type f
+
+    find $@ -exec stat --format '%Y :%y %n' "{}" \; | sort -n | cut -d: -f2-;
+
+}
