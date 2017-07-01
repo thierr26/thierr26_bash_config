@@ -1,4 +1,5 @@
 alias g='git'
+alias galias='git config --get-regexp "^alias\."'
 
 gtagrelease() {
 
