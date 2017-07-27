@@ -1,0 +1,86 @@
+filenotfounderrormsg() {
+
+    # Echo a file not found error message to standard error.
+    #
+    # USAGE:
+    #
+    #     filenotfounderrormsg FILENAME
+
+    echo Error: $1 file not found>&2;
+
+}
+
+lf2crlf() {
+
+    # Convert Unix line endings (LF) to DOS line endings (CRLF) in all the
+    # files of the current directory and its subdirectories. DO NOT USE IN A
+    # DIRECTORY THAT DOES NOT CONTAIN ONLY TEXT FILES WITH UNIX LINE ENDINGS.
+    #
+    # Does nothing if the following conditions are not all fulfilled:
+    # - There is a LICENSE file in the current directory,
+    # - There is a README file in the current directory,
+    # - The README file contains a line matching exactly the argument.
+    #
+    # USAGE:
+    #
+    #     lf2crlf LINE_OF_THE_README_FILE
+
+    LICFILE=LICENSE;
+    READMEFILE=README;
+    if [ $# -ne 1 ]; then
+        echo "Error: Exactly one argument expected">&2;
+    elif [ -z "$1" ]; then
+        echo "Error: Empty argument not allowed">&2;
+    elif ! [ -f "$LICFILE" ]; then
+        filenotfounderrormsg "$LICFILE";
+    elif ! [ -f "$READMEFILE" ]; then
+        filenotfounderrormsg "$READMEFILE";
+    elif [ $(grep -Fcx "$1" "$READMEFILE") -eq 0 ]; then
+        echo "Error: No line matching exactly:">&2;
+        echo >&2;
+        echo "$1">&2;
+        echo >&2;
+        echo "found in $READMEFILE">&2;
+    else
+        find . -type f -exec perl -pi -e 's/\n/\r\n/g' {} \;
+    fi
+}
+
+crlf2lf() {
+
+    # Convert DOS line endings (CRLF) to Unix line endings (LF) in all the
+    # files of the current directory and its subdirectories. DO NOT USE IN A
+    # DIRECTORY THAT DOES NOT CONTAIN ONLY TEXT FILES.
+    #
+    # Does nothing if the following conditions are not all fulfilled:
+    # - There is a LICENSE file in the current directory,
+    # - There is a README file in the current directory,
+    # - The README file contains a line matching exactly the argument.
+    #
+    # You might need to add a carriage return character (^V^M) at the end of
+    # the argument.
+    #
+    # USAGE:
+    #
+    #     crlf2lf LINE_OF_THE_README_FILE
+
+    LICFILE=LICENSE;
+    READMEFILE=README;
+    if [ $# -ne 1 ]; then
+        echo "Error: Exactly one argument expected">&2;
+    elif [ -z "$1" ]; then
+        echo "Error: Empty argument not allowed">&2;
+    elif ! [ -f "$LICFILE" ]; then
+        filenotfounderrormsg "$LICFILE";
+    elif ! [ -f "$READMEFILE" ]; then
+        filenotfounderrormsg "$READMEFILE";
+    elif [ $(grep -Fcx "$1" "$READMEFILE") -eq 0 ]; then
+        echo "Error: No line matching exactly:">&2;
+        echo >&2;
+        echo "$1">&2;
+        echo >&2;
+        echo "found in $READMEFILE">&2;
+    else
+        find . -type f -exec perl -pi -e 's/\r\n/\n/g' {} \;
+    fi
+}
