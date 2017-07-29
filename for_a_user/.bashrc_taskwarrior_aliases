@@ -6,3 +6,6 @@ alias ta='task add pri:M' # Ensures that the task is not added without a
 alias tapp='task add pri:H +appointment'
 alias to='task overdue'
 alias tcal='task calendar'
+
+_completion_loader task;
+complete -F _task t;

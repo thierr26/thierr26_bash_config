@@ -1,6 +1,9 @@
 alias g='git'
 alias galias='git config --get-regexp "^alias\."'
 
+_completion_loader git;
+complete -F _git g;
+
 gtagrelease() {
 
     # Tag the last git commit for a release (tag is "v" followed by the
