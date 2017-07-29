@@ -1,0 +1,4 @@
+alias m='make'
+
+_completion_loader make
+complete -F _make m;
