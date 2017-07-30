@@ -1,0 +1,28 @@
+prependtopath() {
+
+    # Add a directory in front of the PATH environment variable and exports the
+    # variable.
+    #
+    # USAGE:
+    #
+    #     prependtopath DIRECTORY
+
+    export PATH="$1":$PATH;
+
+}
+
+removefrompath() {
+
+    # Remove a directory from the PATH environment variable and exports the
+    # variable.
+    #
+    # USAGE:
+    #
+    #     removefrompath DIRECTORY
+
+    PATH=${PATH//":$1:"/":"};
+    PATH=${PATH/#"$1:"/};
+    PATH=${PATH/%":$1"/};
+    export PATH;
+
+}
