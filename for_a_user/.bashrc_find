@@ -32,6 +32,34 @@ search() {
 
 }
 
+check_display_width() {
+
+    # Loop over text files in the current directory and subdirectories and list
+    # those having a display width larger than 79 characters (i.e. those having
+    # at least one line longer than 79 characters).
+    #
+    # Note that the display width is determined using the wc command with
+    # option -L, which expands tabs to 8 characters. This may causes unexpected
+    # results for users which uses a different tab setup in their text editor.
+    #
+    # The 79 value can be substituted with another one. Just provide the value
+    # as argument to the function.
+    #
+    # USAGE:
+    #
+    #     check_display_width [DISPLAY_WIDTH]
+
+    local W=${1:-79};
+
+    find . -print0 | while IFS= read -r -d $'\0' FN; do
+        if [ $(file -b --mime "$FN"|grep -c "\<text\>") -gt 0 ]; then
+            if [ $(wc -L "$FN"|sed "s/ .\+$//") -gt $W ]; then
+                echo "$FN";
+            fi
+        fi
+    done
+}
+
 find_by_modif_date() {
 
     # Run a find command, with instructions added so that the resulting file
