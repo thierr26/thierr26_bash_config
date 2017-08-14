@@ -28,7 +28,7 @@ search() {
 
     [ $# -gt 2 ] && SEARCHTOP="$3";
 
-    find "$SEARCHTOP" -name "$2" -exec grep -H "$1" {} \;
+    find "$SEARCHTOP" -type f -name "$2" -exec grep -H "$1" {} \;
 
 }
 
