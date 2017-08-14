@@ -25,8 +25,8 @@ lf2crlf() {
     #
     #     lf2crlf LINE_OF_THE_README_FILE
 
-    LICFILE=LICENSE;
-    READMEFILE=README;
+    local LICFILE=LICENSE;
+    local READMEFILE=README;
     if [ $# -ne 1 ]; then
         echo "Error: Exactly one argument expected">&2;
     elif [ -z "$1" ]; then
@@ -64,8 +64,8 @@ crlf2lf() {
     #
     #     crlf2lf LINE_OF_THE_README_FILE
 
-    LICFILE=LICENSE;
-    READMEFILE=README;
+    local LICFILE=LICENSE;
+    local READMEFILE=README;
     if [ $# -ne 1 ]; then
         echo "Error: Exactly one argument expected">&2;
     elif [ -z "$1" ]; then
