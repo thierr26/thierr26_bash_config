@@ -1,8 +1,10 @@
 search() {
 
-    # Run a 'find "<TOP_DIR>" -name "<FILE>" -exec grep -H "<REG_EXP>" {} \;'
+    # Run a 'find "<TOP_DIR>" -name "<FILE>" -exec grep -IH "<REG_EXP>" {} \;'
     # command, which helps finding text files containing lines that match a
     # regular expression.
+    #
+    # FILE defaults to "*".
     #
     # TOP_DIR defaults to the current directory.
     #
@@ -19,16 +21,15 @@ search() {
     #     search "my_function(" "*.c" my_source_tree_root
 
     local SEARCHTOP=.;
+    local FILE="*";
 
     [ $# -lt 1 ] \
         && echo "Regular expression expected as first argument">&2 && return 1;
-    [ $# -lt 2 ] \
-        && echo "File filter (e.g. \"*.c\") expected as second argument"\
-        >&2 && return 1;
 
+    [ $# -gt 1 ] && FILE="$2";
     [ $# -gt 2 ] && SEARCHTOP="$3";
 
-    find "$SEARCHTOP" -type f -name "$2" -exec grep -H "$1" {} \;
+    find "$SEARCHTOP" -type f -name "$FILE" -exec grep -IH "$1" {} \;
 
 }
 
