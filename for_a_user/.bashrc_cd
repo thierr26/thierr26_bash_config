@@ -226,8 +226,6 @@ cda() {
         exec 3>&-;
     fi;
 
-    if [ -d "$DIR" ]; then
-        cd "$DIR";
-    fi;
+    cd "$DIR";
 
 }
