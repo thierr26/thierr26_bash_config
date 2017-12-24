@@ -1,0 +1,1 @@
+alias bup='luckybackup --no-questions default && tar -czvf /home/thierry/backup/${HOSTNAME}_$(date +%F_%H-%M-%S).tgz -C /home/thierry/backup restored'
