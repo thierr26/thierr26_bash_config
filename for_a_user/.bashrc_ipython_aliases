@@ -1,1 +1,2 @@
 alias ipy='ipython'
+alias pylab='ipython --pylab'
