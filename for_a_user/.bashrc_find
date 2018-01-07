@@ -12,13 +12,15 @@ search() {
     #
     # USAGE:
     #
-    #     search REG_EXP FILE [TOP_DIR]
+    #     search REG_EXP FILE [TOP_DIR [OTHER_GREP_OPTIONS]]
     #
     # EXAMPLES:
     #
     #     search "my_function(" "*.c"
     #
     #     search "my_function(" "*.c" my_source_tree_root
+    #
+    #     search "my_function(" "*.c" my_source_tree_root -A5
 
     local SEARCHTOP=.;
     local FILE="*";
@@ -29,7 +31,15 @@ search() {
     [ $# -gt 1 ] && FILE="$2";
     [ $# -gt 2 ] && SEARCHTOP="$3";
 
-    find "$SEARCHTOP" -type f -name "$FILE" -exec grep -IH "$1" {} \;
+    EXPR="$1";
+
+    if [ $# -gt 3 ]; then
+        shift 3;
+        find "$SEARCHTOP" -type f -name "$FILE" -exec grep -IH $* "$EXPR" {} \;
+    else
+        find "$SEARCHTOP" -type f -name "$FILE" -exec grep -IH "$EXPR" {} \;
+    fi;
+
 
 }
 
