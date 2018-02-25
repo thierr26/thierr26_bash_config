@@ -1,0 +1,1 @@
+alias clean_up_log='find /var/log -type f -name "*.gz" -exec rm -f {} \;'
