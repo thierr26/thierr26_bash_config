@@ -1,0 +1,24 @@
+bup() {
+
+    local RESTORE_DIR=~/backup/restored;
+    local RESTORE_PARENT=${RESTORE_DIR%/*};
+    local RESTORE_BASE=${RESTORE_DIR##*/};
+    local SNAP_NAME=.luckybackup-snaphots;
+
+    # Execute luckybackup in console mode for profile default, don't ask any
+    # questions.
+    luckybackup --no-questions default;
+
+    # The rest of the function assumes that executing luckybackup for profile
+    # default actually restores data to $RESTORE_DIR.
+
+    # Find the $SNAP_NAME directories in $RESTORE_DIR and remove them.
+    local SNAP_LIST=$(find $RESTORE_DIR -type d -name $SNAP_NAME);
+    for S in $SNAP_LIST; do
+        rm -rf "$S";
+    done
+
+    # Create an archive of $RESTORE_DIR in $RESTORE_DIR parent directory.
+    tar -czvf "$RESTORE_PARENT"/${HOSTNAME}_$(date +%F_%H-%M-%S).tgz \
+        -C "$RESTORE_PARENT" "$RESTORE_BASE";
+}
