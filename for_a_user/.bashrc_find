@@ -40,7 +40,6 @@ search() {
         find "$SEARCHTOP" -type f -name "$FILE" -exec grep -IH "$EXPR" {} \;
     fi;
 
-
 }
 
 check_display_width() {
@@ -88,5 +87,24 @@ find_by_modif_date() {
     #     find_by_modif_date . -type f
 
     find $@ -exec stat --format '%Y :%y %n' "{}" \; | sort -n | cut -d: -f2-;
+
+}
+
+find_crlf_files() {
+
+    # Run a 'find "<TOP_DIR>" -type f -exec file "{}" ";" | grep -I CRLF'
+    # command, which lists text file with DOS end of lines.
+    #
+    # TOP_DIR defaults to the current directory.
+    #
+    # USAGE:
+    #
+    #     find_crlf_files [TOP_DIR]
+
+    local SEARCHTOP=.;
+
+    [ $# -gt 0 ] && SEARCHTOP="$1";
+
+    find "$SEARCHTOP" -type f -exec file "{}" ";" | grep -I CRLF
 
 }
